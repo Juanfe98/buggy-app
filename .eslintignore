@@ -1,0 +1,7 @@
+# .eslintignore
+node_modules/
+android/
+ios/
+*.config.js
+*.android.js
+*.ios.js
