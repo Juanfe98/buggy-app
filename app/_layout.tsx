@@ -48,7 +48,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const navTheme = colorScheme === 'light' ? DarkNavTheme : LightNavTheme;
+  const navTheme = colorScheme === 'light' ? LightNavTheme : DarkNavTheme;
 
   return (
     <ThemeProvider value={navTheme}>
