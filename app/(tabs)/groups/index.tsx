@@ -1,145 +1,174 @@
-import React from 'react'
-import { View, Text, StyleSheet, FlatList, Pressable, SafeAreaView } from 'react-native'
-import useTheme from '@/hooks/useTheme'
-import FontAwesome from '@expo/vector-icons/FontAwesome'
+import React, { useState, useMemo, useCallback } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import useTheme from '@/hooks/useTheme';
+import { SearchBar } from './components/searchBar';
+import { GroupCard } from './components/groupCard';
+import { Group } from '@/app/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-  export default function GroupsListScreen() {
-    const theme = useTheme()
+export default function Index() {
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
-    // Example data (replace with your real hook)
-    const groups = [
-      { id: '1', name: 'Road Trip 2025', netBalance: -50.0, memberCount: 4 },
-      { id: '2', name: 'Roommates', netBalance: 20.0, memberCount: 3 },
-    ]
+  // only use up to 16px of the inset
+  const bottomPadding = Math.min(insets.bottom, 16) + 8;
 
-    const renderGroup = ({ item }: { item: typeof groups[0] }) => {
-      const owesYou = item.netBalance > 0
-      const badgeColor = owesYou ? theme.success : theme.error
-      const balanceText = owesYou
-        ? `+$${item.netBalance.toFixed(2)}`
-        : `–$${Math.abs(item.netBalance).toFixed(2)}`
+  const router = useRouter();
 
-      return (
-        <Pressable
-          style={[styles.card, { backgroundColor: theme.surface }]}
-          onPress={() => {
-            // router.push(`/groups/${item.id}`)
-          }}
-        >
-          <View style={[styles.avatar, { backgroundColor: theme.primary }]}>
-            <Text style={[styles.avatarText, { color: theme.surface }]}>
-              {item.name.charAt(0)}
-            </Text>
-          </View>
-          <View style={styles.info}>
-            <Text style={[styles.groupName, { color: theme.text }]}>
-              {item.name}
-            </Text>
-            <Text style={[styles.groupMeta, { color: theme.textSecondary }]}>
-              {item.memberCount} members
-            </Text>
-          </View>
-          <View style={[styles.badge, { backgroundColor: badgeColor }]}>
-            <Text style={[styles.badgeText, { color: theme.surface }]}>
-              {balanceText}
-            </Text>
-          </View>
-        </Pressable>
-      )
-    }
+  // Mock hook: replace with real data fetching later
+  const { groups, loading } = useMockGroups();
 
+  // Search state
+  const [query, setQuery] = useState('');
+
+  // Filtered data
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return groups;
+    return groups.filter((g) => g.name.toLowerCase().includes(q));
+  }, [groups, query]);
+
+  // Press handler
+  const onPressGroup = useCallback(
+    (id: string) => {
+      router.push(`/groups/${id}`);
+    },
+    [router],
+  );
+
+  // Empty state
+  if (!loading && filtered.length === 0) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-        <FlatList
-          data={groups}
-          keyExtractor={(item) => item.id}
-          renderItem={renderGroup}
-          contentContainerStyle={{ paddingVertical: 16 }}
-        />
-
-        {/* Floating Action Button */}
-        <Pressable
-          style={[
-            styles.fab,
-            { backgroundColor: theme.primary, shadowColor: theme.primary },
-          ]}
-          onPress={() => {
-            // router.push('/groups/create')
-          }}
-        >
-          <FontAwesome name="plus" size={24} color={theme.surface} />
-        </Pressable>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: theme.background }]}
+      >
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyTitle, { color: theme.text }]}>
+            No groups found
+          </Text>
+          <Text style={[styles.emptySubtitle, { color: theme.textSecondary }]}>
+            Try creating one or adjust your search.
+          </Text>
+        </View>
       </SafeAreaView>
-    )
+    );
   }
 
-// export default function GroupListScreen(){
-//   return (
-//     <View>
-//       <EditScreenInfo />
-//     </View>
-//   )
-// } 
+  return (
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
+      {/* <SearchBar value={query} onChangeText={setQuery} /> */}
+
+      {loading ? (
+        <ActivityIndicator
+          size="large"
+          color={theme.primary}
+          style={styles.loader}
+        />
+      ) : (
+        <>
+          <FlatList
+            data={filtered}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <GroupCard group={item as Group} onPress={onPressGroup} />
+            )}
+            contentContainerStyle={{ paddingVertical: 8 }}
+          />
+          <View
+            style={[
+              styles.footer,
+              {
+                paddingBottom: bottomPadding,
+                backgroundColor: theme.background,
+                borderTopColor: theme.border,
+              },
+            ]}
+          >
+            <Pressable
+              style={[styles.createButton, { backgroundColor: theme.primary }]}
+              onPress={() => {
+                /* router.push('/groups/create') */
+              }}
+            >
+              <Text style={[styles.createText, { color: theme.surface }]}>
+                Create Group
+              </Text>
+            </Pressable>
+          </View>
+        </>
+      )}
+    </SafeAreaView>
+  );
+}
+
+// Mock data hook
+function useMockGroups(): { groups: Group[]; loading: boolean } {
+  const [groups, setGroups] = useState<Group[] | null>(null);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setGroups([
+        { id: '1', name: 'Road Trip 2025', netBalance: -50.0, memberCount: 4 },
+        { id: '2', name: 'Roommates', netBalance: 20.0, memberCount: 3 },
+        { id: '3', name: 'Dinner Crew', netBalance: -15.5, memberCount: 5 },
+        { id: '4', name: 'Dinner Crew', netBalance: -15.5, memberCount: 5 },
+        { id: '5', name: 'Dinner Crew', netBalance: -15.5, memberCount: 5 },
+        { id: '6', name: 'Dinner Crew', netBalance: -15.5, memberCount: 5 },
+        { id: '7', name: 'Dinner Crew', netBalance: -15.5, memberCount: 5 },
+      ]);
+    }, 500);
+  }, []);
+  return { groups: groups ?? [], loading: groups === null };
+}
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  card: {
-    flexDirection: 'row',
+  loader: { flex: 1, justifyContent: 'center' },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 16,
-    marginVertical: 8,
-    borderRadius: 12,
-    padding: 16,
-    // Shadow (iOS) & elevation (Android)
-    shadowOpacity: 0.05,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  footer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  createButton: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // subtle shadow
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  avatarText: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  info: { flex: 1 },
-  groupName: {
+  createText: {
     fontSize: 16,
     fontWeight: '600',
   },
-  groupMeta: {
-    fontSize: 14,
-    marginTop: 4,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  badgeText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // Elevation (Android)
-    elevation: 6,
-    // Shadow (iOS)
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 4 },
-  },
-})
+});
