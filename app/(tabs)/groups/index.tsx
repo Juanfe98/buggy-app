@@ -98,7 +98,7 @@ export default function Index() {
             <Pressable
               style={[styles.createButton, { backgroundColor: theme.primary }]}
               onPress={() => {
-                /* router.push('/groups/create') */
+                router.push('/groups/create');
               }}
             >
               <Text style={[styles.createText, { color: theme.surface }]}>

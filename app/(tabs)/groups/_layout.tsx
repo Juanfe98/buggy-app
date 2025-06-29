@@ -1,7 +1,16 @@
-import { Stack } from 'expo-router';
+import React from 'react';
+import { Stack, Link } from 'expo-router';
 
-function GroupsLayout() {
-  return <Stack />;
+export default function GroupsLayout() {
+  return (
+    <Stack>
+      <Stack.Screen
+        name="index"
+        options={{
+          title: 'Your Groups',
+          headerShown: false,
+        }}
+      />
+    </Stack>
+  );
 }
-
-export default GroupsLayout;
