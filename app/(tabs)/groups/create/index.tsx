@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,64 +9,44 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native'
-import { useRouter } from 'expo-router'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import useTheme from '@/hooks/useTheme'
-import { CreateGroupIconPicker } from '@/components/CreateGroupIconPicker/createGroupIcon'
-import { CurrencyPickerRow } from '@/components/CurrencyPickerRow/currencyPickerRow'
+} from 'react-native';
+import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import useTheme from '@/hooks/useTheme';
+import { CreateGroupIconPicker } from '@/components/CreateGroupIconPicker/createGroupIcon';
+import { CurrencyPickerRow } from '@/components/CurrencyPickerRow/currencyPickerRow';
+import useGroupForm from '@/hooks/groups/useGroupForm';
+import { BottomColorSheet } from '../components/bottomColorSheet';
 
 export default function CreateGroupScreen() {
-  const theme = useTheme()
-  const router = useRouter()
-  const insets = useSafeAreaInsets()
+  const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { form, update } = useGroupForm();
 
-  // Form state
-  const [iconColor, setIconColor] = useState(theme.primary)
-  const [initial, setInitial] = useState('G')
-  const [name, setName] = useState('')
-  const [currency, setCurrency] = useState({ code: 'USD', name: 'US Dollar' })
-  const [description, setDescription] = useState('')
+  const [sheetIndex, setSheetIndex] = useState(-1);
+  const openSheet = () => setSheetIndex(0);
+  const closeSheet = () => setSheetIndex(-1);
 
-  const isNextDisabled = name.trim().length === 0
-
-  // Handlers (to be implemented)
-  const handleIconPress = () => {
-    /* open color picker bottom sheet */
-  }
-  const handleCurrencyPress = () => {
-    /* open currency picker */
-  }
-  const handleNext = () => {
-    // router.push('/groups/create/members', {
-    //   name,
-    //   iconColor,
-    //   initial,
-    //   currency,
-    //   description,
-    // })
-    console.log('redirect to add members');
-  }
+  // Only mandatory field is the group name
+  const isNextDisabled = form.name.trim().length === 0;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+    >
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Icon picker */}
+        <ScrollView contentContainerStyle={styles.scroll}>
           <CreateGroupIconPicker
-            color={iconColor}
-            initial={initial}
-            onPress={handleIconPress}
+            color={form.iconColor}
+            initial={'GC'}
+            onPress={openSheet}
           />
 
-          {/* Group Name */}
-          <View style={styles.field}>
-            <Text style={[styles.label, { color: theme.textSecondary }]}>
-              Group Name
-            </Text>
+          <Field label="Group Name">
             <TextInput
               style={[
                 styles.input,
@@ -74,24 +54,20 @@ export default function CreateGroupScreen() {
               ]}
               placeholder="e.g. Road Trip 2025"
               placeholderTextColor={theme.textSecondary}
-              value={name}
-              onChangeText={setName}
+              value={form.name}
+              onChangeText={(t) => update('name', t)}
               maxLength={30}
+              autoFocus
             />
-          </View>
+          </Field>
 
-          {/* Currency */}
           <CurrencyPickerRow
-            currencyCode={currency.code}
-            currencyName={currency.name}
-            onPress={handleCurrencyPress}
+            currencyCode={form.currency.code}
+            currencyName={form.currency.name}
+            onPress={() => console.log('TODO currency')}
           />
 
-          {/* Description */}
-          <View style={styles.field}>
-            <Text style={[styles.label, { color: theme.textSecondary }]}>
-              Description (optional)
-            </Text>
+          <Field label="Description (optional)">
             <TextInput
               style={[
                 styles.input,
@@ -100,60 +76,80 @@ export default function CreateGroupScreen() {
               ]}
               placeholder="Add a short note"
               placeholderTextColor={theme.textSecondary}
-              value={description}
-              onChangeText={setDescription}
+              value={form.description}
+              onChangeText={(t) => update('description', t)}
               multiline
             />
-          </View>
+          </Field>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Footer & Next Button */}
       <View
         style={[
           styles.footer,
           {
             paddingBottom: Math.min(insets.bottom, 16),
             borderTopColor: theme.border,
-            backgroundColor: theme.background,
           },
         ]}
       >
         <Pressable
+          accessibilityRole="button"
+          disabled={isNextDisabled}
           style={[
-            styles.nextButton,
+            styles.nextBtn,
             {
               backgroundColor: isNextDisabled ? theme.disabled : theme.primary,
-              opacity: isNextDisabled ? 0.6 : 1,
             },
           ]}
-          onPress={handleNext}
-          disabled={isNextDisabled}
+          onPress={() => router.push('/groups/create/members')}
         >
           <Text style={[styles.nextText, { color: theme.surface }]}>
             Next: Add Members
           </Text>
         </Pressable>
       </View>
+
+      <BottomColorSheet
+        index={sheetIndex}
+        onChange={setSheetIndex}
+        onSelect={(c) => {
+          update('iconColor', c);
+          closeSheet();
+        }}
+      />
     </SafeAreaView>
-  )
+  );
 }
+
+const Field: React.FC<{ label: string; children: React.ReactNode }> = ({
+  label,
+  children,
+}) => {
+  const { theme } = useTheme();
+  return (
+    <View style={{ marginBottom: spacing.lg }}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: '500',
+          color: theme.textSecondary,
+          marginBottom: 8,
+        }}
+      >
+        {label}
+      </Text>
+      {children}
+    </View>
+  );
+};
+
+const spacing = { lg: 24 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   flex: { flex: 1 },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 0, // footer handles bottom spacing
-  },
-  field: {
-    marginBottom: 24,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
+  scroll: { padding: 16, paddingBottom: 0 },
   input: {
     height: 48,
     borderWidth: 1,
@@ -161,24 +157,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
+  textArea: { height: 100, textAlignVertical: 'top' },
   footer: {
     paddingHorizontal: 16,
     paddingTop: 12,
     borderTopWidth: 1,
     alignItems: 'center',
   },
-  nextButton: {
+  nextBtn: {
     width: '100%',
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
   },
-  nextText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-})
+  nextText: { fontSize: 16, fontWeight: '600' },
+});

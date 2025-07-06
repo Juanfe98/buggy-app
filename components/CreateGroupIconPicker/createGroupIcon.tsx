@@ -1,39 +1,41 @@
-import React, { memo } from 'react'
-import { Pressable, View, Text, StyleSheet } from 'react-native'
-import useTheme from '@/hooks/useTheme'
+import React, { memo } from 'react';
+import { Pressable, View, Text, StyleSheet } from 'react-native';
+import useTheme from '@/hooks/useTheme';
 
 interface IconPickerProps {
-  color: string
-  initial: string
-  onPress: () => void
+  color: string;
+  initial: string;
+  onPress: () => void;
 }
 
-export const CreateGroupIconPicker = memo<IconPickerProps>(({ color, initial, onPress }) => {
-  const theme = useTheme()
+export const CreateGroupIconPicker = memo<IconPickerProps>(
+  ({ color, initial, onPress }) => {
+    const { theme } = useTheme();
 
-  return (
-    <View style={styles.wrapper}>
-      <Pressable
-        style={({ pressed }) => [
-          styles.circle,
-          {
-            backgroundColor: color,
-            opacity: pressed ? 0.8 : 1,
-            shadowColor: theme.primary,
-          },
-        ]}
-        onPress={onPress}
-      >
-        <Text style={[styles.initial, { color: theme.surface }]}>
-          {initial}
+    return (
+      <View style={styles.wrapper}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.circle,
+            {
+              backgroundColor: color,
+              opacity: pressed ? 0.8 : 1,
+              shadowColor: theme.primary,
+            },
+          ]}
+          onPress={onPress}
+        >
+          <Text style={[styles.initial, { color: theme.surface }]}>
+            {initial}
+          </Text>
+        </Pressable>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>
+          Icon (optional)
         </Text>
-      </Pressable>
-      <Text style={[styles.label, { color: theme.textSecondary }]}>
-        Icon (optional)
-      </Text>
-    </View>
-  )
-})
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -60,4 +62,4 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 8,
   },
-})
+});
