@@ -17,6 +17,7 @@ import { CreateGroupIconPicker } from '@/components/CreateGroupIconPicker/create
 import { CurrencyPickerRow } from '@/components/CurrencyPickerRow/currencyPickerRow';
 import useGroupForm from '@/hooks/groups/useGroupForm';
 import { BottomColorSheet } from '../components/bottomColorSheet';
+import { getGroupInitial } from '@/app/utils/getGroupAcronym';
 
 export default function CreateGroupScreen() {
   const { theme } = useTheme();
@@ -42,7 +43,7 @@ export default function CreateGroupScreen() {
         <ScrollView contentContainerStyle={styles.scroll}>
           <CreateGroupIconPicker
             color={form.iconColor}
-            initial={'GC'}
+            initial={getGroupInitial(form.name)}
             onPress={openSheet}
           />
 
