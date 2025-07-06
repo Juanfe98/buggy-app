@@ -16,7 +16,7 @@ import { Group } from '@/app/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
 
   // only use up to 16px of the inset

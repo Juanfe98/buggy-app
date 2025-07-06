@@ -19,7 +19,7 @@ export const GroupCard = memo(function GroupCard({
   group,
   onPress,
 }: GroupCardProps) {
-  const theme = useTheme();
+  const { theme } = useTheme();
   const owesYou = group.netBalance > 0;
   const badgeColor = owesYou ? theme.success : theme.error;
   const balanceText = owesYou

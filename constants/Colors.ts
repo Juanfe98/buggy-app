@@ -48,5 +48,20 @@ export const dark: ThemeColors = {
   tint: tintColorDark,
 };
 
+/**
+ * Brand color swatches for the group‐icon picker.
+ * Consumed by ColorGrid in the CreateGroupScreen bottom sheet.
+ */
+export const palette = [
+  '#007AFF', // primary
+  '#FF9500', // secondary
+  '#34C759', // success
+  '#FF3B30', // error
+  '#FFD54F',
+  '#81C784',
+  '#64B5F6',
+  '#BA68C8',
+];
+
 // A small helper to pick the right theme
-export const Colors = { light, dark };
+export const Colors = { light, dark, palette };

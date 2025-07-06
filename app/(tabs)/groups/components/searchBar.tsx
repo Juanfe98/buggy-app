@@ -13,7 +13,7 @@ export const SearchBar = memo(function SearchBar({
   value,
   onChangeText,
 }: SearchBarProps) {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   return (
     <View

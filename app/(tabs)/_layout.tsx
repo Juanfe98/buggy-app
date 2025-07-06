@@ -7,7 +7,7 @@ const TabIcon = (props: any) => (
 );
 
 export default function TabLayout() {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   return (
     <Tabs
