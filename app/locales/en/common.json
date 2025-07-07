@@ -3,6 +3,7 @@
     "title": "New Group",
     "nameLabel": "Group Name",
     "descriptionLabel": "Description (optional)",
+    "changeColor": "Group Color",
     "next": "Next: Add Members"
   }
 }

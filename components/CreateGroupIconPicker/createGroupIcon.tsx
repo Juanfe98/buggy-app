@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import useTheme from '@/hooks/useTheme';
+import { useTranslation } from 'react-i18next';
 
 interface IconPickerProps {
   color: string;
@@ -11,6 +12,7 @@ interface IconPickerProps {
 export const CreateGroupIconPicker = memo<IconPickerProps>(
   ({ color, initial, onPress }) => {
     const { theme } = useTheme();
+    const { t } = useTranslation();
 
     return (
       <View style={styles.wrapper}>
@@ -30,7 +32,7 @@ export const CreateGroupIconPicker = memo<IconPickerProps>(
           </Text>
         </Pressable>
         <Text style={[styles.label, { color: theme.textSecondary }]}>
-          Icon (optional)
+          {t('createGroup.changeColor')}
         </Text>
       </View>
     );
