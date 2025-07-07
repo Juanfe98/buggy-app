@@ -1,0 +1,8 @@
+{
+  "createGroup": {
+    "title": "Nuevo Grupo",
+    "nameLabel": "Nombre del Grupo",
+    "descriptionLabel": "Descripción (opcional)",
+    "next": "Siguiente: Agregar Miembros"
+  }
+}

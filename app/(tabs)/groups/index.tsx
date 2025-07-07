@@ -14,9 +14,11 @@ import { SearchBar } from './components/searchBar';
 import { GroupCard } from './components/groupCard';
 import { Group } from '@/app/types';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 export default function Index() {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   // only use up to 16px of the inset
@@ -102,7 +104,7 @@ export default function Index() {
               }}
             >
               <Text style={[styles.createText, { color: theme.surface }]}>
-                Create Group
+                {t('createGroup.title')}
               </Text>
             </Pressable>
           </View>

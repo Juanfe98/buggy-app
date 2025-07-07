@@ -60,7 +60,9 @@ export const palette = [
   '#FFD54F',
   '#81C784',
   '#64B5F6',
-  '#BA68C8',
+  '#BA68F8',
+  '#BA68D2',
+  '#BA68A9',
 ];
 
 // A small helper to pick the right theme

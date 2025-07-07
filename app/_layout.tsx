@@ -10,6 +10,8 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 import { DarkNavTheme, LightNavTheme } from './navigation/navigationTheme';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,12 +56,14 @@ function RootLayoutNav() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={navTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <ThemeProvider value={navTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ThemeProvider>
+      </I18nextProvider>
     </GestureHandlerRootView>
   );
 }
