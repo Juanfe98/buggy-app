@@ -1,6 +1,10 @@
 import React, { memo } from 'react';
-import { TextInput, FlatList, StyleSheet } from 'react-native';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { FlatList, StyleSheet, Platform } from 'react-native';
+import BottomSheet, {
+  BottomSheetView,
+  BottomSheetBackdrop,
+  BottomSheetTextInput,
+} from '@gorhom/bottom-sheet';
 import useTheme from '@/hooks/useTheme';
 import { CurrencyListItem } from './currencyListItem';
 import { Currency } from '@/constants/Currencies';
@@ -35,13 +39,24 @@ export const BottomCurrencySheet = memo(function BottomCurrencySheet({
     <BottomSheet
       index={index}
       onChange={onChange}
-      snapPoints={['90%']}
+      snapPoints={['60%']}
       enablePanDownToClose
+      keyboardBehavior={Platform.OS === 'ios' ? 'extend' : 'interactive'}
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
+      backdropComponent={(backdropProps) => (
+        <BottomSheetBackdrop
+          {...backdropProps}
+          disappearsOnIndex={-1}
+          appearsOnIndex={0}
+          pressBehavior="close"
+        />
+      )}
       backgroundStyle={{ backgroundColor: theme.surface }}
       handleIndicatorStyle={{ backgroundColor: theme.border }}
     >
       <BottomSheetView style={styles.container}>
-        <TextInput
+        <BottomSheetTextInput
           style={[
             styles.search,
             { borderColor: theme.border, color: theme.text },

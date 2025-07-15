@@ -1,5 +1,8 @@
 import React, { memo } from 'react';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import { Text, StyleSheet } from 'react-native';
 import ColorGrid from '@/components/ColorGrid/colorGrid';
 import useTheme from '@/hooks/useTheme';
@@ -17,10 +20,18 @@ export const BottomColorSheet = memo(({ index, onChange, onSelect }: Props) => {
     <BottomSheet
       index={index}
       onChange={onChange}
-      snapPoints={['30%']}
+      snapPoints={['40%']}
       enablePanDownToClose
       backgroundStyle={{ backgroundColor: theme.surface }}
       handleIndicatorStyle={{ backgroundColor: theme.border }}
+      backdropComponent={(backdropProps) => (
+        <BottomSheetBackdrop
+          {...backdropProps}
+          disappearsOnIndex={-1}
+          appearsOnIndex={0}
+          pressBehavior="close"
+        />
+      )}
     >
       <BottomSheetView style={styles.container}>
         <Text style={[styles.title, { color: theme.text }]}>
