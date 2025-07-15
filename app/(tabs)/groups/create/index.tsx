@@ -18,6 +18,8 @@ import { CurrencyPickerRow } from '@/components/CurrencyPickerRow/currencyPicker
 import useGroupForm from '@/hooks/groups/useGroupForm';
 import { BottomColorSheet } from '../components/bottomColorSheet';
 import { getGroupInitial } from '@/app/utils/getGroupAcronym';
+import { BottomCurrencySheet } from '../components/bottomCurrencySheet';
+import { ALL_CURRENCIES } from '@/constants/Currencies';
 
 export default function CreateGroupScreen() {
   const { theme } = useTheme();
@@ -28,6 +30,10 @@ export default function CreateGroupScreen() {
   const [sheetIndex, setSheetIndex] = useState(-1);
   const openSheet = () => setSheetIndex(0);
   const closeSheet = () => setSheetIndex(-1);
+
+  const [curSheetIndex, setCurSheetIndex] = useState(-1);
+  const openCurSheet = () => setCurSheetIndex(0);
+  const closeCurSheet = () => setCurSheetIndex(-1);
 
   // Only mandatory field is the group name
   const isNextDisabled = form.name.trim().length === 0;
@@ -65,7 +71,7 @@ export default function CreateGroupScreen() {
           <CurrencyPickerRow
             currencyCode={form.currency.code}
             currencyName={form.currency.name}
-            onPress={() => console.log('TODO currency')}
+            onPress={openCurSheet}
           />
 
           <Field label="Description (optional)">
@@ -117,6 +123,16 @@ export default function CreateGroupScreen() {
         onSelect={(c) => {
           update('iconColor', c);
           closeSheet();
+        }}
+      />
+
+      <BottomCurrencySheet
+        index={curSheetIndex}
+        onChange={setCurSheetIndex}
+        currencies={ALL_CURRENCIES}
+        onSelect={(c) => {
+          update('currency', { code: c.code, name: c.name });
+          closeCurSheet();
         }}
       />
     </SafeAreaView>
