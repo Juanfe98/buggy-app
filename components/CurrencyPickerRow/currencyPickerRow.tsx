@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderRadius: 8,
-    marginBottom: 24,
   },
   flag: {
     marginRight: 12,

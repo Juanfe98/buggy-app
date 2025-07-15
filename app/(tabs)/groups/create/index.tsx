@@ -68,13 +68,15 @@ export default function CreateGroupScreen() {
             />
           </Field>
 
-          <CurrencyPickerRow
-            currencyCode={form.currency.code}
-            currencyName={form.currency.name}
-            onPress={openCurSheet}
-          />
+          <Field label="Currency">
+            <CurrencyPickerRow
+              currencyCode={form.currency.code}
+              currencyName={form.currency.name}
+              onPress={openCurSheet}
+            />
+          </Field>
 
-          <Field label="Description (optional)">
+          <Field label="Description">
             <TextInput
               style={[
                 styles.input,
@@ -149,7 +151,7 @@ const Field: React.FC<{ label: string; children: React.ReactNode }> = ({
       <Text
         style={{
           fontSize: 14,
-          fontWeight: '500',
+          fontWeight: '700',
           color: theme.textSecondary,
           marginBottom: 8,
         }}
